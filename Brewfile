@@ -1,10 +1,8 @@
-tap "homebrew/bundle"
-
 # ── Shell & Terminal ──────────────────────────────────────────────────────────
 brew "zsh"
 brew "starship"
 brew "tmux"
-brew "wezterm", args: ["cask"] rescue nil
+cask "wezterm"
 
 # ── Python Ecosystem ──────────────────────────────────────────────────────────
 brew "pyenv"
@@ -23,7 +21,7 @@ brew "git-lfs"
 brew "gh"
 brew "pre-commit"
 brew "act"
-cask "docker"
+cask "docker-desktop"
 
 # ── Code Quality ──────────────────────────────────────────────────────────────
 brew "ruff"
@@ -64,5 +62,5 @@ cask "cursor"
 # ── Productivity ──────────────────────────────────────────────────────────────
 cask "raycast"
 cask "1password"
-brew "1password-cli"
+cask "1password-cli"
 cask "rectangle"
