@@ -112,8 +112,8 @@ if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then
   echo "$ZSH_PATH" | sudo tee -a /etc/shells
 fi
 if [[ "$SHELL" != "$ZSH_PATH" ]]; then
-  chsh -s "$ZSH_PATH"
-  ok "Default shell set to Homebrew zsh"
+  chsh -s "$ZSH_PATH" && ok "Default shell set to Homebrew zsh" || \
+    warn "Could not change shell automatically — run manually: chsh -s $ZSH_PATH"
 else
   ok "zsh already default shell"
 fi
