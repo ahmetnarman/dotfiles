@@ -1,0 +1,67 @@
+[include]
+  path = ~/.gitconfig.local          # machine-specific identity (name, email)
+
+[core]
+  editor        = nvim
+  autocrlf      = input
+  excludesfile  = ~/.gitignore_global
+  pager         = delta
+
+[init]
+  defaultBranch = main
+
+[pull]
+  rebase = true
+
+[push]
+  autoSetupRemote = true
+
+[rebase]
+  autoStash = true
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default
+
+# ── delta (better diffs) ──────────────────────────────────────────────────────
+[delta]
+  navigate    = true
+  side-by-side = true
+  line-numbers = true
+  syntax-theme = Dracula
+
+[interactive]
+  diffFilter = delta --color-only
+
+# ── Git LFS ──────────────────────────────────────────────────────────────────
+[filter "lfs"]
+  clean    = git-lfs clean -- %f
+  smudge   = git-lfs smudge -- %f
+  process  = git-lfs filter-process
+  required = true
+
+# ── nbstripout (strip Jupyter notebook outputs before commit) ─────────────────
+[filter "nbstripout"]
+  clean    = nbstripout
+  smudge   = cat
+  required = true
+
+[diff "ipynb"]
+  textconv = nbstripout -t
+
+# ── Aliases ──────────────────────────────────────────────────────────────────
+[alias]
+  st     = status -sb
+  co     = checkout
+  br     = branch
+  lg     = log --oneline --graph --decorate --all
+  undo   = reset HEAD~1 --soft
+  wip    = !git add -A && git commit -m 'wip'
+  unwip  = !git log -n 1 | grep -q -c 'wip' && git reset HEAD~1
+  aliases = config --get-regexp alias
+
+# ── Credentials ──────────────────────────────────────────────────────────────
+[credential]
+  helper = osxkeychain

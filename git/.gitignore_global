@@ -1,0 +1,103 @@
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env.venv/
+
+# ── Secrets & environment variables ──────────────────────────────────────────
+.env
+.env.*
+!.env.example
+secrets.*
+*.key
+*.pem
+credentials.json
+service_account.json
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Distribution / packaging ─────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+wheels/
+
+# ── Testing & coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+
+# ── Type checking & linting ───────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+.pytype/
+
+# ── ML / experiment tracking ─────────────────────────────────────────────────
+mlruns/
+wandb/
+.neptune/
+lightning_logs/
+outputs/            # Hydra outputs
+
+# ── Large model & data files (use git-lfs instead) ───────────────────────────
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.parquet
+
+# ── IDEs ─────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+# ── Terraform ────────────────────────────────────────────────────────────────
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraformrc
+terraform.rc
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
