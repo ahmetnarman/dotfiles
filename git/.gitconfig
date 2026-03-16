@@ -54,6 +54,7 @@
 # ── Aliases ──────────────────────────────────────────────────────────────────
 [alias]
   st     = status -sb
+  ci     = commit
   co     = checkout
   br     = branch
   lg     = log --oneline --graph --decorate --all

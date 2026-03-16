@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-DOTFILES="$HOME/dotfiles"
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 LOG="$HOME/.dotfiles-bootstrap.log"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -51,7 +51,7 @@ fi
 log "Phase 3: Homebrew packages"
 
 info "Running brew bundle (this may take a while)..."
-brew bundle --file="$DOTFILES/Brewfile" --no-lock || warn "Some packages may have failed — check output above"
+brew bundle --file="$DOTFILES/Brewfile" || warn "Some packages may have failed — check output above"
 ok "Brew bundle complete"
 
 # ── Phase 4: Symlinks ─────────────────────────────────────────────────────────
