@@ -1,0 +1,128 @@
+name: Bootstrap Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:   # allow manual trigger
+
+jobs:
+  # ── Job 1: Fast checks (syntax, line endings) ────────────────────────────────
+  lint:
+    name: Lint & Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for CRLF line endings
+        run: |
+          echo "Checking for CRLF line endings..."
+          if git grep -I -l $'\r' -- '*.sh' '*.zsh' '.zshrc' '.zprofile' '*.toml' '*.yaml' '*.yml' '*.conf' '*.json' '*.md' 2>/dev/null; then
+            echo "FAIL: Files with CRLF detected"
+            exit 1
+          fi
+          echo "OK: No CRLF found"
+
+      - name: Syntax check all shell scripts
+        run: |
+          echo "Checking shell script syntax..."
+          find . -name "*.sh" | while read f; do
+            bash -n "$f" && echo "  OK: $f" || { echo "  FAIL: $f"; exit 1; }
+          done
+
+      - name: Check Brewfile is valid
+        run: |
+          # Verify no Ruby-style rescue nil or invalid syntax
+          if grep -n "rescue nil\|args: \[.cask.\]" Brewfile; then
+            echo "FAIL: Invalid Brewfile syntax found"
+            exit 1
+          fi
+          echo "OK: Brewfile syntax looks clean"
+
+  # ── Job 2: Full bootstrap on a fresh macOS VM ─────────────────────────────────
+  bootstrap:
+    name: Full Bootstrap (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - name: Set up git identity (simulates .gitconfig.local)
+        run: |
+          cat > ~/.gitconfig.local <<EOF
+          [user]
+            name  = CI Test
+            email = ci@test.example.com
+          EOF
+
+      - name: Run bootstrap script
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_NO_INSTALL_CLEANUP: "1"
+          # Skip interactive casks that need GUI/sudo
+          HOMEBREW_BUNDLE_CASK_SKIP: "docker-desktop wezterm raycast cursor 1password 1password-cli rectangle visual-studio-code miniforge google-cloud-sdk"
+        run: |
+          git clone https://github.com/ahmetnarman/dotfiles.git ~/dotfiles
+          bash ~/dotfiles/bootstrap.sh
+
+      - name: Verify symlinks were created
+        run: |
+          echo "Checking symlinks..."
+          links=(
+            "$HOME/.zshrc"
+            "$HOME/.zprofile"
+            "$HOME/.gitconfig"
+            "$HOME/.gitignore_global"
+            "$HOME/.config/starship.toml"
+            "$HOME/.config/tmux/tmux.conf"
+            "$HOME/.claude/CLAUDE.md"
+            "$HOME/.config/ruff/ruff.toml"
+          )
+          fail=0
+          for link in "${links[@]}"; do
+            if [[ -L "$link" ]]; then
+              echo "  OK: $link"
+            else
+              echo "  FAIL: $link not symlinked"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Verify key tools are available
+        run: |
+          export PATH="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+          eval "$(pyenv init -)"
+
+          tools=(pyenv uv pipx ruff starship fzf bat eza duckdb nvim)
+          fail=0
+          for tool in "${tools[@]}"; do
+            if command -v "$tool" &>/dev/null; then
+              echo "  OK: $tool ($(command -v $tool))"
+            else
+              echo "  FAIL: $tool not found"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Verify Python 3.12 installed
+        run: |
+          export PATH="$HOME/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          python --version | grep "3.12" && echo "OK: Python 3.12 active" || { echo "FAIL: Python 3.12 not active"; exit 1; }
+
+      - name: Verify pipx tools installed
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          tools=(ruff mypy pre-commit nbstripout llm ipython)
+          fail=0
+          for tool in "${tools[@]}"; do
+            if command -v "$tool" &>/dev/null; then
+              echo "  OK: $tool"
+            else
+              echo "  FAIL: $tool not installed via pipx"
+              fail=1
+            fi
+          done
+          exit $fail
