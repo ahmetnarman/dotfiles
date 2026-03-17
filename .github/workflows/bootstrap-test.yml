@@ -106,6 +106,16 @@ jobs:
           done
           exit $fail
 
+      - name: Verify zshrc sources without errors
+        run: |
+          errors=$(zsh -c 'source ~/.zshrc' 2>&1)
+          if [ -n "$errors" ]; then
+            echo "FAIL: source ~/.zshrc produced errors:"
+            echo "$errors"
+            exit 1
+          fi
+          echo "OK: ~/.zshrc sources cleanly"
+
       - name: Verify Python 3.12 installed
         run: |
           export PATH="$HOME/.pyenv/bin:$PATH"

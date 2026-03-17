@@ -80,11 +80,6 @@ biggest() {
   du -sh ./* | sort -rh | head -10
 }
 
-# ── Git clone and cd into repo ───────────────────────────────────────────────
-gcl() {
-  git clone "$1" && cd "$(basename "$1" .git)"
-}
-
 # ── DuckDB quick query on a CSV/Parquet ──────────────────────────────────────
 # Usage: dq "SELECT * FROM 'data.csv' LIMIT 5"
 dq() {
