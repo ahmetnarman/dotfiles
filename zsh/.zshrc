@@ -69,4 +69,4 @@ export PYTHONDONTWRITEBYTECODE=1   # no __pycache__ clutter
 export PYTHONUNBUFFERED=1
 
 # ── Local overrides (machine-specific, not in git) ───────────────────────────
-[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local" || true
