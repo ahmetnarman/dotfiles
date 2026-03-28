@@ -59,7 +59,7 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: "1"
           HOMEBREW_NO_INSTALL_CLEANUP: "1"
           # Skip interactive casks that need GUI/sudo
-          HOMEBREW_BUNDLE_CASK_SKIP: "docker-desktop wezterm raycast cursor 1password 1password-cli rectangle visual-studio-code miniforge google-cloud-sdk"
+          HOMEBREW_BUNDLE_CASK_SKIP: "docker-desktop iterm2 raycast cursor 1password 1password-cli rectangle flycut google-chrome visual-studio-code miniforge google-cloud-sdk"
         run: |
           git clone https://github.com/ahmetnarman/dotfiles.git ~/dotfiles
           bash ~/dotfiles/bootstrap.sh

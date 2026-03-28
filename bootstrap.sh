@@ -54,16 +54,31 @@ info "Running brew bundle (this may take a while)..."
 brew bundle --file="$DOTFILES/Brewfile" || warn "Some packages may have failed — check output above"
 ok "Brew bundle complete"
 
-# ── Phase 4: Symlinks ─────────────────────────────────────────────────────────
-log "Phase 4: Symlinks"
+# ── Phase 4: Claude Code ─────────────────────────────────────────────────────
+log "Phase 4: Claude Code"
+
+if command -v node &>/dev/null; then
+  if ! command -v claude &>/dev/null; then
+    info "Installing Claude Code..."
+    npm install -g @anthropic-ai/claude-code
+    ok "Claude Code installed"
+  else
+    ok "Claude Code already installed"
+  fi
+else
+  warn "node not found — skipping Claude Code install"
+fi
+
+# ── Phase 5: Symlinks ─────────────────────────────────────────────────────────
+log "Phase 5: Symlinks"
 source "$DOTFILES/install/symlinks.sh"
 
-# ── Phase 5: Python environment ───────────────────────────────────────────────
-log "Phase 5: Python"
+# ── Phase 6: Python environment ───────────────────────────────────────────────
+log "Phase 6: Python"
 source "$DOTFILES/install/python.sh"
 
-# ── Phase 6: Git identity ─────────────────────────────────────────────────────
-log "Phase 6: Git identity"
+# ── Phase 7: Git identity ─────────────────────────────────────────────────────
+log "Phase 7: Git identity"
 
 if [[ ! -f "$HOME/.gitconfig.local" ]]; then
   echo ""
@@ -83,8 +98,8 @@ else
   ok "~/.gitconfig.local already exists"
 fi
 
-# ── Phase 7: SSH key ──────────────────────────────────────────────────────────
-log "Phase 7: SSH key"
+# ── Phase 8: SSH key ──────────────────────────────────────────────────────────
+log "Phase 8: SSH key"
 
 if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
   info "Generating SSH key..."
@@ -100,12 +115,12 @@ else
   ok "SSH key already exists"
 fi
 
-# ── Phase 8: macOS preferences ────────────────────────────────────────────────
-log "Phase 8: macOS preferences"
+# ── Phase 9: macOS preferences ────────────────────────────────────────────────
+log "Phase 9: macOS preferences"
 source "$DOTFILES/macos/defaults.sh" && ok "macOS defaults applied"
 
-# ── Phase 9: Shell ────────────────────────────────────────────────────────────
-log "Phase 9: Default shell"
+# ── Phase 10: Shell ───────────────────────────────────────────────────────────
+log "Phase 10: Default shell"
 
 ZSH_PATH="$(brew --prefix)/bin/zsh"
 if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then

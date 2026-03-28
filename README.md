@@ -8,14 +8,35 @@ Designed for macOS (Apple Silicon), Python-first, AI-workflow-aware.
 
 ---
 
-## Quick Start (New Machine)
+## Quick Start (Brand New Mac)
+
+Total time: ~15 minutes (mostly automated).
+
+### Pre-bootstrap (~2 minutes, manual)
+
+Open **Terminal.app** (built-in, no install needed) and run:
 
 ```bash
+# 1. Install Xcode Command Line Tools
+xcode-select --install
+# Wait for the install dialog to finish, then continue:
+
+# 2. Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# 3. Install git and GitHub CLI
+brew install git gh
+
+# 4. Authenticate with GitHub (opens browser)
+gh auth login
+
+# 5. Clone and run bootstrap
 git clone https://github.com/ahmetnarman/dotfiles.git ~/dotfiles
 bash ~/dotfiles/bootstrap.sh
 ```
 
-That's it. One command. ~10 minutes. Fully configured machine.
+> **Already have Homebrew and git?** Skip straight to step 5.
 
 ---
 
@@ -30,11 +51,11 @@ That's it. One command. ~10 minutes. Fully configured machine.
 | **Data / ML** | `duckdb`, `jq`, `yq` |
 | **Dev** | `git`, `git-lfs`, `gh`, `pre-commit`, `act` |
 | **Code quality** | `ruff` |
-| **AI / LLM** | `ollama`, `node` (for MCP servers) |
+| **AI / LLM** | `ollama`, `node` (for MCP servers), Claude Code (`@anthropic-ai/claude-code`) |
 | **Cloud** | `awscli`, `google-cloud-sdk`, `terraform`, `kubectl`, `helm`, `k9s` |
 | **Terminal utils** | `bat`, `eza`, `fd`, `ripgrep`, `fzf`, `zoxide`, `delta`, `btop`, `htop`, `hyperfine`, `watch`, `wget`, `curl`, `tree` |
 | **Editor** | `neovim` |
-| **Apps (casks)** | VS Code, Cursor, WezTerm, Raycast, 1Password, Rectangle, Docker Desktop, miniforge, Google Cloud SDK |
+| **Apps (casks)** | VS Code, Cursor, iTerm2, Raycast, 1Password, Rectangle, Flycut, Google Chrome, Docker Desktop, miniforge, Google Cloud SDK |
 
 ### Python Global Tools (via pipx)
 
@@ -127,25 +148,21 @@ Also runs `uv venv`, installs dev dependencies, and sets up pre-commit hooks.
 
 ---
 
-## Manual Steps After Bootstrap
+## Post-bootstrap (Manual Steps)
 
 The bootstrap script handles everything automatically except:
 
-1. **Change default shell** (if `chsh` failed — requires password):
-   ```bash
-   chsh -s /opt/homebrew/bin/zsh
-   ```
-2. **Restart terminal** to load the new shell config
-3. **Sign into 1Password** and sync secrets
-4. **Add SSH key to GitHub**: Settings → SSH Keys → paste output of:
+1. **Restart terminal** (or run `exec zsh`) to load the new shell config
+2. **Sign into 1Password** and sync secrets
+3. **Add SSH key to GitHub** — Settings → SSH Keys → paste the key printed during bootstrap:
    ```bash
    cat ~/.ssh/id_ed25519.pub
    ```
-5. **Authenticate GitHub CLI**:
+4. **Fill in API keys** — copy `.env.example` to `~/.env` and add keys:
    ```bash
-   gh auth login
+   cp ~/dotfiles/.env.example ~/.env
+   # Edit ~/.env and fill in ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.
    ```
-6. **Fill in API keys**: copy `.env.example` to `~/.env` and add keys for Anthropic, OpenAI, AWS, etc.
 
 ---
 
@@ -153,8 +170,8 @@ The bootstrap script handles everything automatically except:
 
 Every push runs a full bootstrap test on a fresh `macos-latest` GitHub Actions runner, verifying:
 
-- All 37 Homebrew packages install correctly
-- All 12 symlinks are created
+- All Homebrew packages install correctly
+- All symlinks are created
 - Python 3.12 is active via pyenv
 - All pipx tools are available
 - macOS defaults apply without error

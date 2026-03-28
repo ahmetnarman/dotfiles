@@ -1,4 +1,8 @@
 {
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "model": "opus",
   "mcpServers": {
     "filesystem": {
       "command": "npx",

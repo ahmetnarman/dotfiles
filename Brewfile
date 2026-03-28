@@ -2,7 +2,7 @@
 brew "zsh"
 brew "starship"
 brew "tmux"
-cask "wezterm"
+cask "iterm2"
 
 # ── Python Ecosystem ──────────────────────────────────────────────────────────
 brew "pyenv"
@@ -64,3 +64,5 @@ cask "raycast"
 cask "1password"
 cask "1password-cli"
 cask "rectangle"
+cask "flycut"
+cask "google-chrome"
